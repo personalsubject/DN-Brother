@@ -1,48 +1,38 @@
-// নির্ধারিত সিক্রেট পাসওয়ার্ড
 const SECRET_PASSWORD = "nmdnahid2020";
 
 let currentTab = 'dashboard';
 let filesData = [];
 
-// পাসওয়ার্ড ভেরিফিকেশন লগইন
 function appAuth() {
-    const inputPass = document.getElementById('auth-password').value;
-
-    if (!inputPass) {
-        alert("অনুগ্রহ করে পাসওয়ার্ড লিখুন!");
-        return;
-    }
+    const inputPass = document.getElementById('auth-password').value.trim();
 
     if (inputPass === SECRET_PASSWORD) {
-        localStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('isLoggedIn', 'true');
         showMainApp();
     } else {
-        alert("ভুল পাসওয়ার্ড! প্রবেশাধিকার সংরক্ষিত।");
+        alert("ভুল পাসওয়ার্ড!");
     }
 }
 
 function showMainApp() {
     document.getElementById('auth-box').style.display = 'none';
     document.getElementById('app-box').style.display = 'flex';
-    document.getElementById('user-display-email').innerText = "Personal Admin Portal";
     loadUserData();
 }
 
 function logout() {
-    localStorage.removeItem('isLoggedIn');
+    sessionStorage.removeItem('isLoggedIn');
     document.getElementById('app-box').style.display = 'none';
     document.getElementById('auth-box').style.display = 'block';
     document.getElementById('auth-password').value = '';
 }
 
-// অটোমেটিক লগইন চেক
 window.onload = function() {
-    if (localStorage.getItem('isLoggedIn') === 'true') {
+    if (sessionStorage.getItem('isLoggedIn') === 'true') {
         showMainApp();
     }
 };
 
-// স্টোরেজ ডেটা ম্যানেজমেন্ট
 function loadUserData() {
     const data = localStorage.getItem('my_personal_storage_files');
     filesData = data ? JSON.parse(data) : [];
@@ -56,7 +46,6 @@ function saveUserData() {
     renderFiles();
 }
 
-// সরাসরি ডিভাইস স্টোরেজ/গ্যালারি থেকে আপলোড এবং অটো-ক্যাটাগরি
 function handleFileUpload(event) {
     const files = event.target.files;
     for (let file of files) {
@@ -88,7 +77,6 @@ function getFileCategory(mimeType, filename) {
     return 'other';
 }
 
-// ড্যাশবোর্ড আপডেট
 function updateDashboard() {
     document.getElementById('cnt-total').innerText = filesData.length;
     document.getElementById('cnt-photos').innerText = filesData.filter(f => f.type === 'photos').length;
@@ -100,7 +88,6 @@ function updateDashboard() {
     document.getElementById('cnt-size').innerText = (totalBytes / (1024 * 1024)).toFixed(2) + ' MB';
 }
 
-// ট্যাব ফিল্টারিং
 function switchTab(tab) {
     currentTab = tab;
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
@@ -113,7 +100,6 @@ function switchTab(tab) {
     renderFiles();
 }
 
-// ফাইল প্রদর্শনী
 function renderFiles() {
     const grid = document.getElementById('file-grid');
     grid.innerHTML = '';
@@ -128,9 +114,9 @@ function renderFiles() {
         
         let previewHtml = `<i class="fa-solid fa-file"></i>`;
         if (file.type === 'photos') previewHtml = `<img src="${file.data}" alt="${file.name}">`;
-        else if (file.type === 'videos') previewHtml = `<i class="fa-solid fa-film" style="color:#f87171;"></i>`;
-        else if (file.type === 'music') previewHtml = `<i class="fa-solid fa-compact-disc" style="color:#c084fc;"></i>`;
-        else if (file.type === 'pdf') previewHtml = `<i class="fa-solid fa-file-lines" style="color:#fb923c;"></i>`;
+        else if (file.type === 'videos') previewHtml = `<i class="fa-solid fa-film"></i>`;
+        else if (file.type === 'music') previewHtml = `<i class="fa-solid fa-compact-disc"></i>`;
+        else if (file.type === 'pdf') previewHtml = `<i class="fa-solid fa-file-lines"></i>`;
 
         card.innerHTML = `
             <input type="checkbox" class="file-checkbox" ${file.selected ? 'checked' : ''} onchange="toggleSelect(${file.id})">
@@ -140,8 +126,8 @@ function renderFiles() {
                 <div>${file.size} • ${file.date}</div>
             </div>
             <div class="file-actions">
-                <i class="fa-solid fa-download" title="ডাউনলোড" onclick="downloadSingle('${file.data}', '${file.name}')"></i>
-                <i class="fa-solid fa-trash" title="ডিলিট" onclick="deleteFile(${file.id})"></i>
+                <i class="fa-solid fa-download" onclick="downloadSingle('${file.data}', '${file.name}')"></i>
+                <i class="fa-solid fa-trash" onclick="deleteFile(${file.id})"></i>
             </div>
         `;
         grid.appendChild(card);
@@ -150,7 +136,6 @@ function renderFiles() {
     updateSelectedCount();
 }
 
-// সিলেকশন ও অ্যাকশন
 function toggleSelect(id) {
     const file = filesData.find(f => f.id === id);
     if (file) file.selected = !file.selected;
@@ -193,7 +178,6 @@ function downloadSelected() {
     selected.forEach(file => downloadSingle(file.data, file.name));
 }
 
-// ভিউ ও প্লেইং মোডাল
 function previewFile(id) {
     const file = filesData.find(f => f.id === id);
     const body = document.getElementById('modal-body');
@@ -209,4 +193,4 @@ function previewFile(id) {
 
 function closeModal() {
     document.getElementById('preview-modal').style.display = 'none';
-}
+                            }
