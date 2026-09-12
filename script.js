@@ -1,273 +1,212 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Hind Siliguri', sans-serif;
+// নির্ধারিত সিক্রেট পাসওয়ার্ড
+const SECRET_PASSWORD = "nmdnahid2020";
+
+let currentTab = 'dashboard';
+let filesData = [];
+
+// পাসওয়ার্ড ভেরিফিকেশন লগইন
+function appAuth() {
+    const inputPass = document.getElementById('auth-password').value;
+
+    if (!inputPass) {
+        alert("অনুগ্রহ করে পাসওয়ার্ড লিখুন!");
+        return;
+    }
+
+    if (inputPass === SECRET_PASSWORD) {
+        localStorage.setItem('isLoggedIn', 'true');
+        showMainApp();
+    } else {
+        alert("ভুল পাসওয়ার্ড! প্রবেশাধিকার সংরক্ষিত।");
+    }
 }
 
-/* ডার্ক ও এআই ফিউচারিস্টিক গ্র্যাডিয়েন্ট ব্যাকগ্রাউন্ড */
-body {
-    background: linear-gradient(-45deg, #030712, #0b1528, #0f172a, #0284c7, #1e1b4b);
-    background-size: 400% 400%;
-    animation: aiGlow 12s ease infinite;
-    color: #f8fafc;
-    min-height: 100vh;
+function showMainApp() {
+    document.getElementById('auth-box').style.display = 'none';
+    document.getElementById('app-box').style.display = 'flex';
+    document.getElementById('user-display-email').innerText = "Personal Admin Portal";
+    loadUserData();
 }
 
-@keyframes aiGlow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+function logout() {
+    localStorage.removeItem('isLoggedIn');
+    document.getElementById('app-box').style.display = 'none';
+    document.getElementById('auth-box').style.display = 'block';
+    document.getElementById('auth-password').value = '';
 }
 
-/* Auth Glass Box */
-.auth-box {
-    max-width: 400px;
-    margin: 80px auto;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 0 25px rgba(14, 165, 233, 0.25);
-    text-align: center;
+// অটোমেটিক লগইন চেক
+window.onload = function() {
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        showMainApp();
+    }
+};
+
+// স্টোরেজ ডেটা ম্যানেজমেন্ট
+function loadUserData() {
+    const data = localStorage.getItem('my_personal_storage_files');
+    filesData = data ? JSON.parse(data) : [];
+    updateDashboard();
+    renderFiles();
 }
 
-.auth-header i { 
-    font-size: 45px; 
-    color: #38bdf8; 
-    margin-bottom: 10px; 
-    text-shadow: 0 0 15px #0284c7; 
-}
-.auth-header h2 { font-size: 24px; margin-bottom: 5px; color: #f8fafc; }
-.auth-header p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
-
-.auth-form input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    background: rgba(30, 41, 59, 0.8);
-    border: 1px solid #334155;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 14px;
-    outline: none;
-    transition: 0.3s;
+function saveUserData() {
+    localStorage.setItem('my_personal_storage_files', JSON.stringify(filesData));
+    updateDashboard();
+    renderFiles();
 }
 
-.auth-form input:focus {
-    border-color: #38bdf8;
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+// সরাসরি ডিভাইস স্টোরেজ/গ্যালারি থেকে আপলোড এবং অটো-ক্যাটাগরি
+function handleFileUpload(event) {
+    const files = event.target.files;
+    for (let file of files) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const fileObj = {
+                id: Date.now() + Math.random(),
+                name: file.name,
+                size: (file.size / 1024).toFixed(1) + ' KB',
+                rawSize: file.size,
+                type: getFileCategory(file.type, file.name),
+                data: e.target.result,
+                date: new Date().toLocaleDateString('bn-BD'),
+                selected: false
+            };
+            filesData.push(fileObj);
+            saveUserData();
+        };
+        reader.readAsDataURL(file);
+    }
 }
 
-.auth-btns { display: flex; gap: 10px; }
-
-/* Buttons & Neon Glow */
-.btn {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 14px;
-    transition: 0.3s;
+function getFileCategory(mimeType, filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    if (mimeType.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'photos';
+    if (mimeType.startsWith('video/') || ['mp4', 'mkv', 'webm'].includes(ext)) return 'videos';
+    if (mimeType.startsWith('audio/') || ['mp3', 'wav', 'ogg'].includes(ext)) return 'music';
+    if (mimeType === 'application/pdf' || ext === 'pdf') return 'pdf';
+    return 'other';
 }
 
-.btn.primary { 
-    background: linear-gradient(135deg, #2563eb, #0284c7); 
-    color: #fff; 
-    width: 100%; 
-    box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+// ড্যাশবোর্ড আপডেট
+function updateDashboard() {
+    document.getElementById('cnt-total').innerText = filesData.length;
+    document.getElementById('cnt-photos').innerText = filesData.filter(f => f.type === 'photos').length;
+    document.getElementById('cnt-videos').innerText = filesData.filter(f => f.type === 'videos').length;
+    document.getElementById('cnt-music').innerText = filesData.filter(f => f.type === 'music').length;
+    document.getElementById('cnt-pdf').innerText = filesData.filter(f => f.type === 'pdf').length;
+
+    const totalBytes = filesData.reduce((sum, f) => sum + (f.rawSize || 0), 0);
+    document.getElementById('cnt-size').innerText = (totalBytes / (1024 * 1024)).toFixed(2) + ' MB';
 }
 
-.btn.secondary { 
-    background: rgba(30, 41, 59, 0.8); 
-    color: #38bdf8; 
-    border: 1px solid rgba(56, 189, 248, 0.3); 
+// ট্যাব ফিল্টারিং
+function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    if(event && event.target) {
+        event.target.closest('.nav-btn').classList.add('active');
+    }
+    
+    document.getElementById('dashboard-view').style.display = (tab === 'dashboard') ? 'block' : 'none';
+    document.getElementById('section-title').innerText = tab.toUpperCase();
+    renderFiles();
 }
 
-.btn:hover { 
-    transform: translateY(-2px); 
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.6); 
+// ফাইল প্রদর্শনী
+function renderFiles() {
+    const grid = document.getElementById('file-grid');
+    grid.innerHTML = '';
+
+    const filtered = (currentTab === 'dashboard' || currentTab === 'all') 
+        ? filesData 
+        : filesData.filter(f => f.type === currentTab);
+
+    filtered.forEach(file => {
+        const card = document.createElement('div');
+        card.className = `file-card ${file.selected ? 'selected' : ''}`;
+        
+        let previewHtml = `<i class="fa-solid fa-file"></i>`;
+        if (file.type === 'photos') previewHtml = `<img src="${file.data}" alt="${file.name}">`;
+        else if (file.type === 'videos') previewHtml = `<i class="fa-solid fa-film" style="color:#f87171;"></i>`;
+        else if (file.type === 'music') previewHtml = `<i class="fa-solid fa-compact-disc" style="color:#c084fc;"></i>`;
+        else if (file.type === 'pdf') previewHtml = `<i class="fa-solid fa-file-lines" style="color:#fb923c;"></i>`;
+
+        card.innerHTML = `
+            <input type="checkbox" class="file-checkbox" ${file.selected ? 'checked' : ''} onchange="toggleSelect(${file.id})">
+            <div class="file-preview" onclick="previewFile(${file.id})">${previewHtml}</div>
+            <div class="file-info">
+                <div class="file-name" title="${file.name}">${file.name}</div>
+                <div>${file.size} • ${file.date}</div>
+            </div>
+            <div class="file-actions">
+                <i class="fa-solid fa-download" title="ডাউনলোড" onclick="downloadSingle('${file.data}', '${file.name}')"></i>
+                <i class="fa-solid fa-trash" title="ডিলিট" onclick="deleteFile(${file.id})"></i>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+
+    updateSelectedCount();
 }
 
-/* App Layout */
-.app-box { display: flex; min-height: 100vh; }
-
-.sidebar {
-    width: 250px;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(10px);
-    border-right: 1px solid rgba(56, 189, 248, 0.2);
-    color: #fff;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
+// সিলেকশন ও অ্যাকশন
+function toggleSelect(id) {
+    const file = filesData.find(f => f.id === id);
+    if (file) file.selected = !file.selected;
+    saveUserData();
 }
 
-.brand { 
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-    font-size: 20px; 
-    font-weight: bold; 
-    margin-bottom: 30px; 
-    color: #38bdf8; 
-    text-shadow: 0 0 10px #0284c7; 
+function selectAllFiles() {
+    filesData.forEach(f => f.selected = true);
+    saveUserData();
 }
 
-.nav-links { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
-
-.nav-btn {
-    background: transparent;
-    border: none;
-    color: #94a3b8;
-    padding: 12px;
-    text-align: left;
-    font-size: 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: 0.3s;
+function clearSelection() {
+    filesData.forEach(f => f.selected = false);
+    saveUserData();
 }
 
-.nav-btn.active, .nav-btn:hover { 
-    background: rgba(56, 189, 248, 0.15); 
-    color: #38bdf8; 
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+function updateSelectedCount() {
+    const count = filesData.filter(f => f.selected).length;
+    document.getElementById('selected-count').innerText = `${count} টি ফাইল সিলেক্টেড`;
 }
 
-.logout-btn { 
-    background: rgba(239, 68, 68, 0.2); 
-    border: 1px solid #ef4444; 
-    color: #ef4444; 
-    width: 100%; 
+function deleteFile(id) {
+    filesData = filesData.filter(f => f.id !== id);
+    saveUserData();
 }
 
-.main-content { flex-grow: 1; padding: 25px; overflow-y: auto; }
-
-.top-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    margin-bottom: 25px; 
-    border-bottom: 1px solid rgba(56, 189, 248, 0.2); 
-    padding-bottom: 12px; 
+function downloadSingle(url, filename) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
 }
 
-/* Dashboard Stat Cards */
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px; }
-
-.stat-card {
-    background: rgba(30, 41, 59, 0.6);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 15px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    transition: 0.3s;
+function downloadSelected() {
+    const selected = filesData.filter(f => f.selected);
+    if (selected.length === 0) {
+        alert("কোনো ফাইল সিলেক্ট করা হয়নি!");
+        return;
+    }
+    selected.forEach(file => downloadSingle(file.data, file.name));
 }
 
-.stat-card:hover {
-    border-color: #38bdf8;
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+// ভিউ ও প্লেইং মোডাল
+function previewFile(id) {
+    const file = filesData.find(f => f.id === id);
+    const body = document.getElementById('modal-body');
+    body.innerHTML = '';
+
+    if (file.type === 'photos') body.innerHTML = `<img src="${file.data}" style="max-width:100%; border-radius:8px;">`;
+    else if (file.type === 'videos') body.innerHTML = `<video src="${file.data}" controls style="max-width:100%; border-radius:8px;"></video>`;
+    else if (file.type === 'music') body.innerHTML = `<audio src="${file.data}" controls style="width:100%;"></audio>`;
+    else body.innerHTML = `<p style="color:#fff;">${file.name}</p><br><a class="btn primary" href="${file.data}" download="${file.name}">ডাউনলোড করুন</a>`;
+
+    document.getElementById('preview-modal').style.display = 'flex';
 }
 
-.stat-card i { font-size: 26px; }
-.stat-card.blue i { color: #38bdf8; }
-.stat-card.green i { color: #4ade80; }
-.stat-card.red i { color: #f87171; }
-.stat-card.purple i { color: #c084fc; }
-.stat-card.orange i { color: #fb923c; }
-.stat-card.grey i { color: #94a3b8; }
-
-/* Upload Zone */
-.upload-section { margin-bottom: 20px; }
-.drop-zone {
-    border: 2px dashed rgba(56, 189, 248, 0.4);
-    background: rgba(15, 23, 42, 0.5);
-    backdrop-filter: blur(8px);
-    padding: 30px;
-    text-align: center;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.drop-zone:hover { 
-    border-color: #38bdf8; 
-    background: rgba(56, 189, 248, 0.1); 
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.3); 
-}
-
-.upload-icon { font-size: 40px; color: #38bdf8; margin-bottom: 10px; text-shadow: 0 0 10px #0284c7; }
-
-/* Action Bar */
-.action-bar { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    margin-bottom: 20px; 
-    background: rgba(15, 23, 42, 0.6); 
-    backdrop-filter: blur(8px);
-    padding: 12px; 
-    border-radius: 12px; 
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.selection-controls { display: flex; align-items: center; gap: 10px; }
-
-/* File Items Grid */
-.file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-
-.file-card {
-    background: rgba(30, 41, 59, 0.7);
-    backdrop-filter: blur(8px);
-    border-radius: 12px;
-    padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: 0.3s;
-}
-
-.file-card:hover {
-    border-color: #38bdf8;
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
-}
-
-.file-card.selected { 
-    border-color: #38bdf8; 
-    background: rgba(56, 189, 248, 0.2); 
-}
-
-.file-checkbox { position: absolute; top: 10px; left: 10px; width: 18px; height: 18px; accent-color: #38bdf8; }
-.file-preview { height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; cursor: pointer; }
-.file-preview img, .file-preview video { max-width: 100%; max-height: 100%; border-radius: 6px; object-fit: cover; }
-.file-preview i { font-size: 40px; color: #38bdf8; }
-
-.file-info { font-size: 12px; color: #94a3b8; }
-.file-name { font-weight: bold; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
-.file-actions { display: flex; justify-content: space-between; margin-top: 8px; }
-.file-actions i { cursor: pointer; font-size: 15px; color: #94a3b8; transition: 0.2s; }
-.file-actions i:hover { color: #f87171; }
-
-/* Preview Modal */
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); justify-content: center; align-items: center; z-index: 100; }
-.modal-content { background: #0f172a; border: 1px solid #38bdf8; padding: 20px; border-radius: 12px; max-width: 80%; max-height: 80%; overflow: auto; position: relative; box-shadow: 0 0 30px rgba(56, 189, 248, 0.4); }
-.close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #fff; }
-
-/* Responsive Mobile View */
-@media (max-width: 768px) {
-    .app-box { flex-direction: column; }
-    .sidebar { width: 100%; }
-    .nav-links { flex-direction: row; overflow-x: auto; padding-bottom: 8px; }
-    .nav-btn { white-space: nowrap; }
+function closeModal() {
+    document.getElementById('preview-modal').style.display = 'none';
 }
