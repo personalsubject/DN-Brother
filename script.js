@@ -1,1409 +1,273 @@
-const DB_NAME =
-"MyStorageHubDB";
-
-const STORE =
-"files";
-
-
-let db;
-
-let currentUser =
-null;
-
-let currentCategory =
-"all";
-
-let selected =
-new Set();
-
-let visibleFiles =
-[];
-
-
-
-/* DATABASE */
-
-function initDB() {
-
-  return new Promise(
-    (resolve, reject) => {
-
-      const request =
-      indexedDB.open(
-        DB_NAME,
-        1
-      );
-
-
-      request.onupgradeneeded =
-      function(event) {
-
-        const database =
-        event.target.result;
-
-
-        database.createObjectStore(
-          STORE,
-          {
-            keyPath: "id",
-            autoIncrement: true
-          }
-        );
-
-      };
-
-
-      request.onsuccess =
-      function(event) {
-
-        db =
-        event.target.result;
-
-        resolve();
-
-      };
-
-
-      request.onerror =
-      function() {
-
-        reject();
-
-      };
-
-    }
-  );
-
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Hind Siliguri', sans-serif;
 }
 
-
-
-/* USERS */
-
-function users() {
-
-  return JSON.parse(
-    localStorage.getItem(
-      "storageHubUsers"
-    ) || "[]"
-  );
-
+/* ডার্ক ও এআই ফিউচারিস্টিক গ্র্যাডিয়েন্ট ব্যাকগ্রাউন্ড */
+body {
+    background: linear-gradient(-45deg, #030712, #0b1528, #0f172a, #0284c7, #1e1b4b);
+    background-size: 400% 400%;
+    animation: aiGlow 12s ease infinite;
+    color: #f8fafc;
+    min-height: 100vh;
 }
 
-
-function saveUsers(
-  data
-) {
-
-  localStorage.setItem(
-    "storageHubUsers",
-    JSON.stringify(data)
-  );
-
+@keyframes aiGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-
-
-/* LOGIN PAGE */
-
-function showRegister() {
-
-  loginBox.classList.add(
-    "hidden"
-  );
-
-  registerBox.classList.remove(
-    "hidden"
-  );
-
+/* Auth Glass Box */
+.auth-box {
+    max-width: 400px;
+    margin: 80px auto;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 0 25px rgba(14, 165, 233, 0.25);
+    text-align: center;
 }
 
+.auth-header i { 
+    font-size: 45px; 
+    color: #38bdf8; 
+    margin-bottom: 10px; 
+    text-shadow: 0 0 15px #0284c7; 
+}
+.auth-header h2 { font-size: 24px; margin-bottom: 5px; color: #f8fafc; }
+.auth-header p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
 
-function showLogin() {
-
-  registerBox.classList.add(
-    "hidden"
-  );
-
-  loginBox.classList.remove(
-    "hidden"
-  );
-
+.auth-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
 }
 
-
-
-/* REGISTER */
-
-function register() {
-
-  const id =
-  regEmail.value.trim();
-
-  const password =
-  regPassword.value;
-
-
-  if (
-    !id ||
-    password.length < 4
-  ) {
-
-    toast(
-      "সঠিক তথ্য দিন"
-    );
-
-    return;
-
-  }
-
-
-  const userList =
-  users();
-
-
-  if (
-    userList.some(
-      user =>
-      user.id === id
-    )
-  ) {
-
-    toast(
-      "এই Account আগে থেকেই আছে"
-    );
-
-    return;
-
-  }
-
-
-  userList.push({
-    id: id,
-    pass: password
-  });
-
-
-  saveUsers(
-    userList
-  );
-
-
-  toast(
-    "Account তৈরি হয়েছে"
-  );
-
-
-  showLogin();
-
+.auth-form input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
 }
 
+.auth-btns { display: flex; gap: 10px; }
 
-
-/* LOGIN */
-
-function login() {
-
-  const id =
-  loginEmail.value.trim();
-
-  const password =
-  loginPassword.value;
-
-
-  const found =
-  users().some(
-    user =>
-    user.id === id &&
-    user.pass === password
-  );
-
-
-  if (found) {
-
-    currentUser =
-    id;
-
-
-    localStorage.setItem(
-      "storageHubCurrentUser",
-      id
-    );
-
-
-    startApp();
-
-  }
-
-  else {
-
-    toast(
-      "Login তথ্য ভুল"
-    );
-
-  }
-
+/* Buttons & Neon Glow */
+.btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.3s;
 }
 
-
-
-/* LOGOUT */
-
-function logout() {
-
-  localStorage.removeItem(
-    "storageHubCurrentUser"
-  );
-
-
-  currentUser =
-  null;
-
-
-  app.classList.add(
-    "hidden"
-  );
-
-
-  authPage.classList.remove(
-    "hidden"
-  );
-
+.btn.primary { 
+    background: linear-gradient(135deg, #2563eb, #0284c7); 
+    color: #fff; 
+    width: 100%; 
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
 }
 
-
-
-/* START */
-
-function startApp() {
-
-  authPage.classList.add(
-    "hidden"
-  );
-
-
-  app.classList.remove(
-    "hidden"
-  );
-
-
-  userName.textContent =
-  currentUser;
-
-
-  loadFiles();
-
+.btn.secondary { 
+    background: rgba(30, 41, 59, 0.8); 
+    color: #38bdf8; 
+    border: 1px solid rgba(56, 189, 248, 0.3); 
 }
 
-
-
-/* UPLOAD MODAL */
-
-function openUpload() {
-
-  uploadModal.classList.remove(
-    "hidden"
-  );
-
+.btn:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.6); 
 }
 
+/* App Layout */
+.app-box { display: flex; min-height: 100vh; }
 
-function closeUpload() {
-
-  uploadModal.classList.add(
-    "hidden"
-  );
-
-
-  fileInput.value =
-  "";
-
-
-  chosenFiles.textContent =
-  "কোনো File নির্বাচন করা হয়নি";
-
+.sidebar {
+    width: 250px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(56, 189, 248, 0.2);
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
-
-
-/* SHOW FILE */
-
-function showChosenFiles() {
-
-  const files =
-  [...fileInput.files];
-
-
-  if (!files.length) {
-
-    chosenFiles.textContent =
-    "কোনো File নির্বাচন করা হয়নি";
-
-    return;
-
-  }
-
-
-  chosenFiles.innerHTML =
-  files.map(
-    file =>
-    "📄 " +
-    file.name +
-    " (" +
-    formatBytes(
-      file.size
-    ) +
-    ")"
-  ).join(
-    "<br>"
-  );
-
+.brand { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    font-size: 20px; 
+    font-weight: bold; 
+    margin-bottom: 30px; 
+    color: #38bdf8; 
+    text-shadow: 0 0 10px #0284c7; 
 }
 
+.nav-links { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
 
-
-/* CATEGORY */
-
-function categoryOf(
-  file
-) {
-
-  if (
-    file.type.startsWith(
-      "image/"
-    )
-  ) {
-
-    return "photo";
-
-  }
-
-
-  if (
-    file.type.startsWith(
-      "video/"
-    )
-  ) {
-
-    return "video";
-
-  }
-
-
-  if (
-    file.type.startsWith(
-      "audio/"
-    )
-  ) {
-
-    return "music";
-
-  }
-
-
-  if (
-    file.type ===
-    "application/pdf"
-  ) {
-
-    return "pdf";
-
-  }
-
-
-  return "other";
-
+.nav-btn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    padding: 12px;
+    text-align: left;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: 0.3s;
 }
 
-
-
-/* UPLOAD */
-
-function uploadFiles() {
-
-  const files =
-  [...fileInput.files];
-
-
-  if (!files.length) {
-
-    toast(
-      "আগে File নির্বাচন করুন"
-    );
-
-    return;
-
-  }
-
-
-  const transaction =
-  db.transaction(
-    STORE,
-    "readwrite"
-  );
-
-
-  const store =
-  transaction.objectStore(
-    STORE
-  );
-
-
-  files.forEach(
-    file => {
-
-      store.add({
-
-        user:
-        currentUser,
-
-        name:
-        file.name,
-
-        type:
-        file.type,
-
-        size:
-        file.size,
-
-        category:
-        categoryOf(file),
-
-        blob:
-        file,
-
-        created:
-        Date.now()
-
-      });
-
-    }
-  );
-
-
-  transaction.oncomplete =
-  function() {
-
-    toast(
-      files.length +
-      "টি File Upload হয়েছে"
-    );
-
-
-    closeUpload();
-
-
-    loadFiles();
-
-  };
-
+.nav-btn.active, .nav-btn:hover { 
+    background: rgba(56, 189, 248, 0.15); 
+    color: #38bdf8; 
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
 }
 
-
-
-/* GET FILES */
-
-function getUserFiles() {
-
-  return new Promise(
-    resolve => {
-
-      const request =
-      db
-      .transaction(
-        STORE
-      )
-      .objectStore(
-        STORE
-      )
-      .getAll();
-
-
-      request.onsuccess =
-      function() {
-
-        const files =
-        request.result.filter(
-          file =>
-          file.user ===
-          currentUser
-        );
-
-
-        resolve(
-          files
-        );
-
-      };
-
-    }
-  );
-
+.logout-btn { 
+    background: rgba(239, 68, 68, 0.2); 
+    border: 1px solid #ef4444; 
+    color: #ef4444; 
+    width: 100%; 
 }
 
+.main-content { flex-grow: 1; padding: 25px; overflow-y: auto; }
 
-
-/* LOAD FILE */
-
-async function loadFiles() {
-
-  const allFiles =
-  await getUserFiles();
-
-
-  updateStats(
-    allFiles
-  );
-
-
-  if (
-    currentCategory ===
-    "all"
-  ) {
-
-    visibleFiles =
-    allFiles;
-
-  }
-
-  else {
-
-    visibleFiles =
-    allFiles.filter(
-      file =>
-      file.category ===
-      currentCategory
-    );
-
-  }
-
-
-  renderFiles();
-
+.top-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 25px; 
+    border-bottom: 1px solid rgba(56, 189, 248, 0.2); 
+    padding-bottom: 12px; 
 }
 
+/* Dashboard Stat Cards */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px; }
 
-
-/* STATISTICS */
-
-function updateStats(
-  files
-) {
-
-  totalFiles.textContent =
-  files.length;
-
-
-  photoCount.textContent =
-  files.filter(
-    file =>
-    file.category ===
-    "photo"
-  ).length;
-
-
-  videoCount.textContent =
-  files.filter(
-    file =>
-    file.category ===
-    "video"
-  ).length;
-
-
-  const totalSize =
-  files.reduce(
-    (total, file) =>
-    total + file.size,
-    0
-  );
-
-
-  storageUsed.textContent =
-  formatBytes(
-    totalSize
-  );
-
+.stat-card {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: 0.3s;
 }
 
-
-
-/* CHANGE CATEGORY */
-
-function setCategory(
-  category
-) {
-
-  currentCategory =
-  category;
-
-
-  selected.clear();
-
-
-  document
-  .querySelectorAll(
-    ".category"
-  )
-  .forEach(
-    button => {
-
-      button.classList.toggle(
-        "active",
-        button.dataset.cat ===
-        category
-      );
-
-    }
-  );
-
-
-  const titles = {
-
-    all:
-    "All Files",
-
-    photo:
-    "Photos",
-
-    video:
-    "Videos",
-
-    music:
-    "Music",
-
-    pdf:
-    "PDF Files",
-
-    other:
-    "Other Files"
-
-  };
-
-
-  sectionTitle.textContent =
-  titles[category];
-
-
-  loadFiles();
-
+.stat-card:hover {
+    border-color: #38bdf8;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
 }
 
+.stat-card i { font-size: 26px; }
+.stat-card.blue i { color: #38bdf8; }
+.stat-card.green i { color: #4ade80; }
+.stat-card.red i { color: #f87171; }
+.stat-card.purple i { color: #c084fc; }
+.stat-card.orange i { color: #fb923c; }
+.stat-card.grey i { color: #94a3b8; }
 
-
-/* ICON */
-
-function getIcon(
-  category
-) {
-
-  const icons = {
-
-    photo:
-    "🖼️",
-
-    video:
-    "🎥",
-
-    music:
-    "🎵",
-
-    pdf:
-    "📄",
-
-    other:
-    "📁"
-
-  };
-
-
-  return icons[category];
-
+/* Upload Zone */
+.upload-section { margin-bottom: 20px; }
+.drop-zone {
+    border: 2px dashed rgba(56, 189, 248, 0.4);
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(8px);
+    padding: 30px;
+    text-align: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-
-
-/* RENDER FILES */
-
-function renderFiles() {
-
-  fileGrid.innerHTML =
-  "";
-
-
-  if (
-    visibleFiles.length === 0
-  ) {
-
-    emptyState.classList.remove(
-      "hidden"
-    );
-
-  }
-
-  else {
-
-    emptyState.classList.add(
-      "hidden"
-    );
-
-  }
-
-
-  visibleFiles.forEach(
-    file => {
-
-      const card =
-      document.createElement(
-        "article"
-      );
-
-
-      card.className =
-      "file-card";
-
-
-      /* Checkbox */
-
-      const checkbox =
-      document.createElement(
-        "input"
-      );
-
-
-      checkbox.type =
-      "checkbox";
-
-
-      checkbox.className =
-      "check";
-
-
-      checkbox.checked =
-      selected.has(
-        file.id
-      );
-
-
-      checkbox.onchange =
-      function() {
-
-        toggleFile(
-          file.id,
-          checkbox.checked
-        );
-
-      };
-
-
-      card.appendChild(
-        checkbox
-      );
-
-
-
-      /* Preview */
-
-      const preview =
-      document.createElement(
-        "div"
-      );
-
-
-      preview.className =
-      "preview";
-
-
-      if (
-        file.category ===
-        "photo"
-      ) {
-
-        const image =
-        document.createElement(
-          "img"
-        );
-
-
-        image.src =
-        URL.createObjectURL(
-          file.blob
-        );
-
-
-        preview.appendChild(
-          image
-        );
-
-      }
-
-
-      else if (
-        file.category ===
-        "video"
-      ) {
-
-        const video =
-        document.createElement(
-          "video"
-        );
-
-
-        video.src =
-        URL.createObjectURL(
-          file.blob
-        );
-
-
-        video.controls =
-        true;
-
-
-        preview.appendChild(
-          video
-        );
-
-      }
-
-
-      else {
-
-        preview.textContent =
-        getIcon(
-          file.category
-        );
-
-      }
-
-
-      card.appendChild(
-        preview
-      );
-
-
-
-      /* Info */
-
-      const info =
-      document.createElement(
-        "div"
-      );
-
-
-      info.className =
-      "file-info";
-
-
-      const fileName =
-      document.createElement(
-        "div"
-      );
-
-
-      fileName.className =
-      "file-name";
-
-
-      fileName.textContent =
-      file.name;
-
-
-      const meta =
-      document.createElement(
-        "div"
-      );
-
-
-      meta.className =
-      "file-meta";
-
-
-      meta.textContent =
-      getIcon(
-        file.category
-      ) +
-      " " +
-      formatBytes(
-        file.size
-      );
-
-
-      info.appendChild(
-        fileName
-      );
-
-
-      info.appendChild(
-        meta
-      );
-
-
-
-      /* Buttons */
-
-      const actions =
-      document.createElement(
-        "div"
-      );
-
-
-      actions.className =
-      "file-actions";
-
-
-      const downloadButton =
-      document.createElement(
-        "button"
-      );
-
-
-      downloadButton.textContent =
-      "⬇ Download";
-
-
-      downloadButton.onclick =
-      function() {
-
-        downloadOne(
-          file
-        );
-
-      };
-
-
-      const deleteButton =
-      document.createElement(
-        "button"
-      );
-
-
-      deleteButton.textContent =
-      "🗑";
-
-
-      deleteButton.className =
-      "delete-btn";
-
-
-      deleteButton.onclick =
-      function() {
-
-        deleteFile(
-          file.id
-        );
-
-      };
-
-
-      actions.appendChild(
-        downloadButton
-      );
-
-
-      actions.appendChild(
-        deleteButton
-      );
-
-
-      info.appendChild(
-        actions
-      );
-
-
-      card.appendChild(
-        info
-      );
-
-
-      fileGrid.appendChild(
-        card
-      );
-
-    }
-  );
-
-
-  updateSelectionInfo();
-
+.drop-zone:hover { 
+    border-color: #38bdf8; 
+    background: rgba(56, 189, 248, 0.1); 
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.3); 
 }
 
+.upload-icon { font-size: 40px; color: #38bdf8; margin-bottom: 10px; text-shadow: 0 0 10px #0284c7; }
 
-
-/* SELECT FILE */
-
-function toggleFile(
-  id,
-  checked
-) {
-
-  if (checked) {
-
-    selected.add(
-      id
-    );
-
-  }
-
-  else {
-
-    selected.delete(
-      id
-    );
-
-  }
-
-
-  updateSelectionInfo();
-
+/* Action Bar */
+.action-bar { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 20px; 
+    background: rgba(15, 23, 42, 0.6); 
+    backdrop-filter: blur(8px);
+    padding: 12px; 
+    border-radius: 12px; 
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.selection-controls { display: flex; align-items: center; gap: 10px; }
 
+/* File Items Grid */
+.file-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
 
-/* SELECT ALL */
-
-function toggleSelectAll() {
-
-  const allSelected =
-  visibleFiles.length > 0 &&
-  visibleFiles.every(
-    file =>
-    selected.has(
-      file.id
-    )
-  );
-
-
-  visibleFiles.forEach(
-    file => {
-
-      if (allSelected) {
-
-        selected.delete(
-          file.id
-        );
-
-      }
-
-      else {
-
-        selected.add(
-          file.id
-        );
-
-      }
-
-    }
-  );
-
-
-  renderFiles();
-
+.file-card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: 0.3s;
 }
 
-
-
-/* CLEAR */
-
-function clearSelection() {
-
-  selected.clear();
-
-
-  renderFiles();
-
+.file-card:hover {
+    border-color: #38bdf8;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
 }
 
-
-
-/* SELECT INFO */
-
-function updateSelectionInfo() {
-
-  selectedInfo.textContent =
-  selected.size +
-  " file selected";
-
-
-  downloadSelectedBtn.disabled =
-  selected.size === 0;
-
+.file-card.selected { 
+    border-color: #38bdf8; 
+    background: rgba(56, 189, 248, 0.2); 
 }
 
+.file-checkbox { position: absolute; top: 10px; left: 10px; width: 18px; height: 18px; accent-color: #38bdf8; }
+.file-preview { height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; cursor: pointer; }
+.file-preview img, .file-preview video { max-width: 100%; max-height: 100%; border-radius: 6px; object-fit: cover; }
+.file-preview i { font-size: 40px; color: #38bdf8; }
 
+.file-info { font-size: 12px; color: #94a3b8; }
+.file-name { font-weight: bold; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+.file-actions { display: flex; justify-content: space-between; margin-top: 8px; }
+.file-actions i { cursor: pointer; font-size: 15px; color: #94a3b8; transition: 0.2s; }
+.file-actions i:hover { color: #f87171; }
 
-/* DOWNLOAD ONE */
+/* Preview Modal */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); justify-content: center; align-items: center; z-index: 100; }
+.modal-content { background: #0f172a; border: 1px solid #38bdf8; padding: 20px; border-radius: 12px; max-width: 80%; max-height: 80%; overflow: auto; position: relative; box-shadow: 0 0 30px rgba(56, 189, 248, 0.4); }
+.close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #fff; }
 
-function downloadOne(
-  file
-) {
-
-  const url =
-  URL.createObjectURL(
-    file.blob
-  );
-
-
-  const link =
-  document.createElement(
-    "a"
-  );
-
-
-  link.href =
-  url;
-
-
-  link.download =
-  file.name;
-
-
-  document.body.appendChild(
-    link
-  );
-
-
-  link.click();
-
-
-  link.remove();
-
-
-  setTimeout(
-    function() {
-
-      URL.revokeObjectURL(
-        url
-      );
-
-    },
-    1000
-  );
-
+/* Responsive Mobile View */
+@media (max-width: 768px) {
+    .app-box { flex-direction: column; }
+    .sidebar { width: 100%; }
+    .nav-links { flex-direction: row; overflow-x: auto; padding-bottom: 8px; }
+    .nav-btn { white-space: nowrap; }
 }
-
-
-
-/* DOWNLOAD SELECTED */
-
-async function downloadSelected() {
-
-  const allFiles =
-  await getUserFiles();
-
-
-  const files =
-  allFiles.filter(
-    file =>
-    selected.has(
-      file.id
-    )
-  );
-
-
-  if (!files.length) {
-
-    return;
-
-  }
-
-
-  toast(
-    files.length +
-    "টি File Download শুরু হচ্ছে"
-  );
-
-
-  files.forEach(
-    (
-      file,
-      index
-    ) => {
-
-      setTimeout(
-        function() {
-
-          downloadOne(
-            file
-          );
-
-        },
-        index * 500
-      );
-
-    }
-  );
-
-}
-
-
-
-/* DELETE */
-
-function deleteFile(
-  id
-) {
-
-  const yes =
-  confirm(
-    "এই File Delete করতে চান?"
-  );
-
-
-  if (!yes) {
-
-    return;
-
-  }
-
-
-  const transaction =
-  db.transaction(
-    STORE,
-    "readwrite"
-  );
-
-
-  transaction
-  .objectStore(
-    STORE
-  )
-  .delete(
-    id
-  );
-
-
-  transaction.oncomplete =
-  function() {
-
-    selected.delete(
-      id
-    );
-
-
-    toast(
-      "File Delete হয়েছে"
-    );
-
-
-    loadFiles();
-
-  };
-
-}
-
-
-
-/* FORMAT SIZE */
-
-function formatBytes(
-  bytes
-) {
-
-  if (!bytes) {
-
-    return "0 MB";
-
-  }
-
-
-  const units = [
-    "B",
-    "KB",
-    "MB",
-    "GB"
-  ];
-
-
-  const index =
-  Math.floor(
-    Math.log(bytes) /
-    Math.log(1024)
-  );
-
-
-  return (
-    bytes /
-    Math.pow(
-      1024,
-      index
-    )
-  ).toFixed(
-    index ? 2 : 0
-  ) +
-  " " +
-  units[index];
-
-}
-
-
-
-/* TOAST */
-
-function toast(
-  message
-) {
-
-  const toastBox =
-  document.getElementById(
-    "toast"
-  );
-
-
-  toastBox.textContent =
-  message;
-
-
-  toastBox.classList.add(
-    "show"
-  );
-
-
-  clearTimeout(
-    window.toastTimer
-  );
-
-
-  window.toastTimer =
-  setTimeout(
-    function() {
-
-      toastBox.classList.remove(
-        "show"
-      );
-
-    },
-    3000
-  );
-
-}
-
-
-
-/* START DATABASE */
-
-window.addEventListener(
-  "DOMContentLoaded",
-
-  async function() {
-
-    await initDB();
-
-
-    const savedUser =
-    localStorage.getItem(
-      "storageHubCurrentUser"
-    );
-
-
-    if (savedUser) {
-
-      currentUser =
-      savedUser;
-
-
-      startApp();
-
-    }
-
-  }
-
-);
