@@ -3,20 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MY STORAGE HUB - AI Edition</title>
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Personal Cyberpunk AI Cloud Storage Hub on GitHub Pages.">
-    <meta name="keywords" content="Storage Hub, GitHub Pages, AI Theme, File Manager">
-    <meta name="author" content="DN Brother">
-    
-    <!-- Google Font & Icons -->
+    <title>MY STORAGE HUB</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-   <!-- Auth Box (Password Protected Login) -->
     <div id="auth-box" class="auth-box">
         <div class="auth-header">
             <i class="fa-solid fa-lock"></i>
@@ -26,15 +19,12 @@
         <div class="auth-form">
             <input type="password" id="auth-password" placeholder="অ্যাক্সেস পাসওয়ার্ড লিখুন">
             <div class="auth-btns">
-                <button class="btn primary" onclick="appAuth()"><i class="fa-solid fa-key"></i> আনলক করুন</button>
+                <button type="button" class="btn primary" onclick="appAuth()"><i class="fa-solid fa-key"></i> আনলক করুন</button>
             </div>
         </div>
-    </div> 
+    </div>
 
-    <!-- Main App Portal -->
     <div id="app-box" class="app-box" style="display: none;">
-        
-        <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="brand">
                 <i class="fa-solid fa-brain"></i>
@@ -52,17 +42,14 @@
             <button class="btn logout-btn" onclick="logout()"><i class="fa-solid fa-power-off"></i> সাইনআউট</button>
         </aside>
 
-        <!-- Content Console -->
         <main class="main-content">
-            
             <header class="top-header">
                 <h2 id="section-title">ড্যাশবোর্ড</h2>
                 <div class="user-profile">
-                    <span id="user-display-email">Personal Admin Portal</span>
+                    <span id="user-display-email">Admin Console</span>
                 </div>
             </header>
 
-            <!-- Overview Dashboard -->
             <div id="dashboard-view" class="view-section">
                 <div class="stats-grid">
                     <div class="stat-card blue">
@@ -92,17 +79,14 @@
                 </div>
             </div>
 
-            <!-- AI Drag and Drop Upload -->
             <section class="upload-section">
                 <div class="drop-zone" onclick="document.getElementById('file-input').click()">
                     <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
-                    <p>ফাইল নির্বাচন বা আপলোড করতে এখানে ট্যাপ করুন</p>
-                    <small>ছবি, ভিডিও, অডিও, PDF এবং অন্যান্য যেকোনো ফাইল সাপোর্ট করবে</small>
+                    <p>ফাইল আপলোড করতে এখানে ট্যাপ করুন</p>
                     <input type="file" id="file-input" multiple onchange="handleFileUpload(event)" style="display:none;">
                 </div>
             </section>
 
-            <!-- Actions Bar -->
             <section class="action-bar">
                 <div class="selection-controls">
                     <button class="btn secondary" onclick="selectAllFiles()"><i class="fa-solid fa-square-check"></i> Select All</button>
@@ -112,14 +96,11 @@
                 <button class="btn primary" onclick="downloadSelected()"><i class="fa-solid fa-download"></i> Download Selected</button>
             </section>
 
-            <!-- File Display Grid -->
             <section id="file-grid" class="file-grid"></section>
-
         </main>
     </div>
 
-    <!-- Media Preview Modal -->
-    <div id="preview-modal" class="modal" onclick="closeModal(event)">
+    <div id="preview-modal" class="modal" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <div id="modal-body"></div>
