@@ -1,32 +1,507 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday ❤️</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="style.css">
+  <title>My Storage Hub</title>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div class="birthday">
+  <!-- Notification -->
+  <div id="toast"></div>
 
-        <!-- পুতুল -->
-        <div class="doll">
-            🧸
-            <span class="hand">👋</span>
-        </div>
 
-        <!-- Love -->
-        <div class="love">❤️</div>
+  <!-- =========================
+       LOGIN PAGE
+  ========================== -->
 
-        <!-- Birthday লেখা -->
-        <h1>Happy Birthday 🎂</h1>
+  <section id="authPage" class="auth-page">
 
-        <p>Have a beautiful day ❤️</p>
+    <div class="auth-card">
+
+      <div class="logo">
+        ☁️
+      </div>
+
+      <h1>My Storage Hub</h1>
+
+      <p>
+        নিজের ছবি, ভিডিও, মিউজিক ও PDF
+        এক জায়গায় রাখুন
+      </p>
+
+
+      <!-- Login -->
+
+      <div id="loginBox">
+
+        <input
+          id="loginEmail"
+          type="text"
+          placeholder="Email বা Phone Number"
+        >
+
+        <input
+          id="loginPassword"
+          type="password"
+          placeholder="Password"
+        >
+
+        <button onclick="login()">
+          🔐 Login
+        </button>
+
+
+        <p>
+          নতুন User?
+
+          <button
+            class="text-btn"
+            onclick="showRegister()"
+          >
+            Sign Up
+          </button>
+
+        </p>
+
+      </div>
+
+
+      <!-- Register -->
+
+      <div id="registerBox" class="hidden">
+
+        <input
+          id="regEmail"
+          type="text"
+          placeholder="Email বা Phone Number"
+        >
+
+        <input
+          id="regPassword"
+          type="password"
+          placeholder="Password"
+        >
+
+        <button onclick="register()">
+          ✨ Create Account
+        </button>
+
+
+        <p>
+
+          আগে Account আছে?
+
+          <button
+            class="text-btn"
+            onclick="showLogin()"
+          >
+            Login
+          </button>
+
+        </p>
+
+      </div>
 
     </div>
+
+  </section>
+
+
+  <!-- =========================
+       MAIN WEBSITE
+  ========================== -->
+
+  <section id="app" class="hidden">
+
+
+    <!-- Header -->
+
+    <header>
+
+      <div class="brand">
+
+        ☁️
+
+        <span>
+          My Storage Hub
+        </span>
+
+      </div>
+
+
+      <div class="user-area">
+
+        <span id="userName"></span>
+
+        <button onclick="logout()">
+          Logout
+        </button>
+
+      </div>
+
+    </header>
+
+
+
+    <main>
+
+
+      <!-- Hero -->
+
+      <section class="hero">
+
+        <div>
+
+          <h2>
+            আমার ব্যক্তিগত স্টোরেজ
+          </h2>
+
+          <p>
+            ছবি, ভিডিও, মিউজিক ও PDF
+            এক জায়গায় রাখুন।
+          </p>
+
+        </div>
+
+
+        <button
+          class="upload-main"
+          onclick="openUpload()"
+        >
+          📤 Upload File
+        </button>
+
+      </section>
+
+
+
+      <!-- Statistics -->
+
+      <section class="stats">
+
+        <div>
+
+          <b id="totalFiles">
+            0
+          </b>
+
+          <span>
+            Total Files
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <b id="photoCount">
+            0
+          </b>
+
+          <span>
+            Photos
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <b id="videoCount">
+            0
+          </b>
+
+          <span>
+            Videos
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <b id="storageUsed">
+            0 MB
+          </b>
+
+          <span>
+            Used Storage
+          </span>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- Categories -->
+
+      <section class="categories">
+
+
+        <button
+          class="category active"
+          data-cat="all"
+          onclick="setCategory('all')"
+        >
+
+          📁
+
+          <span>
+            All Files
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="category"
+          data-cat="photo"
+          onclick="setCategory('photo')"
+        >
+
+          🖼️
+
+          <span>
+            Photo
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="category"
+          data-cat="video"
+          onclick="setCategory('video')"
+        >
+
+          🎥
+
+          <span>
+            Video
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="category"
+          data-cat="music"
+          onclick="setCategory('music')"
+        >
+
+          🎵
+
+          <span>
+            Music
+          </span>
+
+        </button>
+
+
+
+        <button
+          class="category"
+          data-cat="pdf"
+          onclick="setCategory('pdf')"
+        >
+
+          📄
+
+          <span>
+            PDF
+          </span>
+
+        </button>
+
+
+      </section>
+
+
+
+      <!-- Files -->
+
+      <section class="files-section">
+
+
+        <div class="toolbar">
+
+
+          <div>
+
+            <h2 id="sectionTitle">
+              All Files
+            </h2>
+
+            <small id="selectedInfo">
+              0 file selected
+            </small>
+
+          </div>
+
+
+
+          <div class="actions">
+
+
+            <button onclick="toggleSelectAll()">
+
+              ☑ Select All
+
+            </button>
+
+
+
+            <button
+              id="downloadSelectedBtn"
+              onclick="downloadSelected()"
+              disabled
+            >
+
+              ⬇ Download Selected
+
+            </button>
+
+
+
+            <button onclick="clearSelection()">
+
+              ✕ Clear
+
+            </button>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <!-- File Grid -->
+
+        <div
+          id="fileGrid"
+          class="file-grid"
+        >
+        </div>
+
+
+
+        <!-- Empty -->
+
+        <div
+          id="emptyState"
+          class="empty"
+        >
+
+          📂
+
+          <h3>
+            এখনো কোনো File নেই
+          </h3>
+
+          <p>
+            Upload File চাপ দিয়ে শুরু করুন।
+          </p>
+
+        </div>
+
+
+      </section>
+
+
+    </main>
+
+  </section>
+
+
+
+  <!-- =========================
+       UPLOAD POPUP
+  ========================== -->
+
+  <div
+    id="uploadModal"
+    class="modal hidden"
+  >
+
+    <div class="modal-card">
+
+
+      <button
+        class="close"
+        onclick="closeUpload()"
+      >
+        ×
+      </button>
+
+
+      <h2>
+        📤 Upload Files
+      </h2>
+
+
+      <p>
+        ছবি, ভিডিও, মিউজিক,
+        PDF বা অন্য File নির্বাচন করুন।
+      </p>
+
+
+
+      <label class="choose-btn">
+
+        📁 Choose File
+
+
+        <input
+          id="fileInput"
+          type="file"
+          multiple
+          onchange="showChosenFiles()"
+        >
+
+
+      </label>
+
+
+
+      <div
+        id="chosenFiles"
+        class="chosen-files"
+      >
+
+        কোনো File নির্বাচন করা হয়নি
+
+      </div>
+
+
+
+      <button
+        class="upload-now"
+        onclick="uploadFiles()"
+      >
+
+        ☁️ Upload Now
+
+      </button>
+
+
+    </div>
+
+  </div>
+
+
+
+  <script src="script.js"></script>
 
 </body>
 </html>
