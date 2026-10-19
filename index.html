@@ -268,6 +268,19 @@ let melodyIndex = 0;
 let musicEnabled = false;
 let typingTimer = null;
 
+// টেলিগ্রামে নোটিফিকেশন পাঠানোর নতুন ফাংশন
+function sendToTelegram(answerText) {
+  const botToken = "8886160753:AAF7KohpCxo8OWiMIp94uNUg4y6v8wad7iY";
+  const chatId = "8818940901"; // আপনার দেওয়া চ্যাট আইডি
+
+  const message = `💖 খাদিজার উত্তর এসেছে!\nউত্তর: ${answerText}`;
+  const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+  fetch(url)
+    .then(response => response.json())
+    .catch(error => console.error("Telegram Error:", error));
+}
+
 function show(id){
   pages.forEach(page => $(page).classList.toggle("hidden", page !== id));
 }
@@ -282,7 +295,7 @@ function typeText(element,text,speed=34){
   },speed);
 }
 
-// Web Audio দিয়ে হালকা, নিজস্ব তৈরি সুর
+// Web Audio দিয়ে হালকা, নিজস্ব তৈরি সুর
 function initMusic(){
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
   if(!AudioContextClass) return;
@@ -316,7 +329,6 @@ function note(freq,start,duration,volume){
 function playMusicPhrase(){
   if(!audio || !musicEnabled) return;
 
-  // মৃদু পিয়ানোর মতো সুর
   const melodies = [
     [523.25,659.25,783.99,659.25,587.33,698.46],
     [493.88,587.33,659.25,783.99,698.46,587.33],
@@ -329,7 +341,6 @@ function playMusicPhrase(){
     note(freq,i*0.31,0.62,0.045);
   });
 
-  // নরম হারমনি
   note(261.63,0,1.6,0.018);
   note(329.63,1.05,1.2,0.014);
 }
@@ -426,6 +437,10 @@ $("next").addEventListener("click",()=>{
 
 $("yes").addEventListener("click",()=>{
   initMusic();
+
+  // টেলিগ্রামে "হ্যাঁ" উত্তর পাঠানো
+  sendToTelegram("হ্যাঁ, কথা বলতে পারি 😊");
+
   show("answer");
   $("answerEmoji").textContent="🌷";
   $("answerTitle").textContent="ধন্যবাদ, খাদিজা! 💗";
@@ -435,6 +450,10 @@ $("yes").addEventListener("click",()=>{
 });
 
 $("think").addEventListener("click",()=>{
+
+  // টেলিগ্রামে "সময় দরকার" উত্তর পাঠানো
+  sendToTelegram("আমার একটু সময় দরকার 🌷");
+
   show("answer");
   $("answerEmoji").textContent="🌸";
   $("answerTitle").textContent="একদম ঠিক আছে, খাদিজা";
@@ -455,4 +474,4 @@ window.addEventListener("pagehide",()=>{
 });
 </script>
 </body>
-  </html>
+</html>
