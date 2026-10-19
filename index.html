@@ -1,6 +1,612 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magical Love Surprise 💖</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  overflow: hidden;
+  background: #100817;
+  color: white;
+}
+
+.screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .8s, visibility .8s;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* START SCREEN */
+#start {
+  z-index: 5;
+  background: radial-gradient(circle, #fff, #ffe0ef);
+  color: #ff4f9a;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.start-heart {
+  font-size: 75px;
+  animation: beat 1s infinite;
+}
+
+button {
+  padding: 15px 32px;
+  border: none;
+  border-radius: 40px;
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  background: linear-gradient(100deg, #ff3185, #a855f7);
+  box-shadow: 0 0 25px #ff318566;
+  cursor: pointer;
+}
+
+@keyframes beat {
+  50% { transform: scale(1.2); }
+}
+
+/* LOADING */
+#loading {
+  z-index: 4;
+  flex-direction: column;
+  gap: 20px;
+  background: #100817;
+}
+
+.progress-wrap {
+  width: 250px;
+  height: 8px;
+  border-radius: 20px;
+  background: #ffffff22;
+  overflow: hidden;
+}
+
+#progress {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #ff3185, #c084fc, white);
+  box-shadow: 0 0 15px #ff3185;
+}
+
+.loader {
+  font-size: 60px;
+  animation: beat .8s infinite;
+}
+
+/* MAIN SCREEN */
+#main {
+  background:
+    radial-gradient(ellipse at top, #45153f, transparent 65%),
+    linear-gradient(145deg, #090711, #210c2b);
+  overflow: hidden;
+}
+
+#canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  width: 92%;
+  max-width: 700px;
+  text-align: center;
+  padding: 20px;
+}
+
+#musicBtn {
+  position: absolute;
+  top: 18px;
+  right: 15px;
+  z-index: 5;
+  padding: 10px 15px;
+  font-size: 12px;
+}
+
+.kicker {
+  color: #ffc1df;
+  font-size: 12px;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+}
+
+#icon {
+  font-size: 75px;
+  margin-bottom: 20px;
+  animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float {
+  50% { transform: translateY(-12px) rotate(4deg); }
+}
+
+#message {
+  min-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(20px, 5vw, 30px);
+  line-height: 1.5;
+  color: #fff0f7;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: .8s;
+}
+
+#message.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* FINAL REVEAL */
+#final {
+  display: none;
+  animation: reveal 1.5s ease both;
+}
+
+.love-title {
+  font-size: clamp(42px, 10vw, 72px);
+  font-weight: 900;
+  background: linear-gradient(
+    90deg, white, #ff8ac2, #ff3185, #c4a1ff, white
+  );
+  background-size: 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 4s linear infinite;
+}
+
+#name {
+  font-size: clamp(40px, 11vw, 85px);
+  font-weight: 900;
+  margin-top: 30px;
+  color: white;
+  overflow-wrap: anywhere;
+  text-shadow:
+    0 0 8px white,
+    0 0 22px #ff4f9a,
+    0 0 45px #ff168b,
+    0 0 80px #a855f7;
+  animation: nameGlow 2s infinite alternate;
+}
+
+.name-line {
+  width: 65%;
+  max-width: 250px;
+  height: 2px;
+  margin: 15px auto;
+  background: linear-gradient(90deg, transparent, white, #ff4f9a, transparent);
+  box-shadow: 0 0 15px #ff4f9a;
+}
+
+.note {
+  margin-top: 18px;
+  color: #ffd5e8;
+  font-size: 16px;
+}
+
+@keyframes shine {
+  to { background-position: 300% center; }
+}
+
+@keyframes nameGlow {
+  from { transform: scale(.96); filter: brightness(.9); }
+  to { transform: scale(1.04); filter: brightness(1.3); }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: scale(.5) translateY(30px);
+    filter: blur(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* FLOATING EMOJIS */
+.float-item {
+  position: absolute;
+  bottom: -70px;
+  pointer-events: none;
+  animation: rise linear forwards;
+}
+
+@keyframes rise {
+  0% { transform: translateY(0) rotate(0); opacity: 0; }
+  15% { opacity: .9; }
+  100% {
+    transform: translateY(-120vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@media (max-height: 600px) {
+  #icon { font-size: 48px; margin-bottom: 5px; }
+  #message { min-height: 65px; }
+  #name { font-size: clamp(35px, 9vh, 65px); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- START -->
+<section id="start" class="screen">
+  <div class="start-heart">💖</div>
+  <p>A LITTLE SURPRISE FOR YOU</p>
+  <button id="startBtn">✨ Get Started ✨</button>
+</section>
+
+<!-- LOADING -->
+<section id="loading" class="screen hidden">
+  <div class="loader">💗</div>
+  <div class="progress-wrap">
+    <div id="progress"></div>
+  </div>
+  <p id="loadText">Preparing your surprise... 0%</p>
+</section>
+
+<!-- MAIN -->
+<section id="main" class="screen hidden">
+  <canvas id="canvas"></canvas>
+
+  <button id="musicBtn">♫ Music: Off</button>
+
+  <main class="content">
+    <p class="kicker">A LITTLE MOMENT JUST FOR YOU</p>
+
+    <div id="icon">🧸</div>
+    <div id="message"></div>
+
+    <div id="final">
+      <p style="letter-spacing:4px;color:#ffd5e8;margin-bottom:15px">
+        YOU ARE SPECIAL
+      </p>
+
+      <div class="love-title">I Love You!</div>
+
+      <div id="name">খাদিজা</div>
+      <div class="name-line"></div>
+
+      <p class="note">
+        একটা ছোট্ট সারপ্রাইজ, শুধু তোমার জন্য 💕
+      </p>
+    </div>
+  </main>
+</section>
+
+<script>
+/* CUSTOMIZE HERE */
+const CONFIG = {
+  personName: "খাদিজা",
+
+  steps: [
+    {
+      icon: "🧸",
+      text: "তোমার জন্য ছোট্ট একটা মিষ্টি সারপ্রাইজ..."
+    },
+    {
+      icon: "🐰",
+      text: "কিছু মানুষ অল্পতেই মন ভালো করে দেয়..."
+    },
+    {
+      icon: "🌸",
+      text: "তোমার হাসিটা সবসময় এমন সুন্দর থাকুক..."
+    },
+    {
+      icon: "🎁",
+      text: "এই ছোট্ট মুহূর্তটা তোমার মুখে হাসি আনুক..."
+    }
+  ],
+
+  floatingItems: [
+    "💖", "💗", "🌸", "✨", "🧸",
+    "🎀", "🦋", "💕", "🌷", "⭐"
+  ]
+};
+
+const $ = id => document.getElementById(id);
+
+let audioCtx;
+let musicOn = false;
+let musicTimer;
+let floatTimer;
+let started = false;
+
+function playTone(freq, duration = .4, volume = .06, delay = 0) {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+
+    if (!audioCtx) audioCtx = new AC();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const t = audioCtx.currentTime + delay;
+
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, t);
+
+    gain.gain.setValueAtTime(.0001, t);
+    gain.gain.exponentialRampToValueAtTime(volume, t + .04);
+    gain.gain.exponentialRampToValueAtTime(.0001, t + duration);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start(t);
+    osc.stop(t + duration + .05);
+  } catch (e) {}
+}
+
+/* Soft synthesized melody */
+const melody = [
+  [523.25, 0],
+  [659.25, .35],
+  [783.99, .70],
+  [659.25, 1.05],
+  [587.33, 1.40],
+  [698.46, 1.75],
+  [880, 2.10],
+  [783.99, 2.45],
+  [659.25, 2.80],
+  [523.25, 3.15]
+];
+
+function playMelody() {
+  if (!musicOn) return;
+
+  melody.forEach(([freq, delay]) => {
+    playTone(freq, 1.1, .025, delay);
+  });
+
+  playTone(261.63, 3.4, .015, 0);
+}
+
+function startMusic() {
+  if (musicOn) return;
+
+  musicOn = true;
+  $("musicBtn").textContent = "♫ Music: On";
+
+  playMelody();
+  musicTimer = setInterval(playMelody, 3700);
+}
+
+function stopMusic() {
+  musicOn = false;
+  clearInterval(musicTimer);
+  $("musicBtn").textContent = "♫ Music: Off";
+}
+
+$("musicBtn").onclick = () => {
+  if (musicOn) stopMusic();
+  else startMusic();
+};
+
+/* START AND LOADING */
+$("startBtn").onclick = () => {
+  if (started) return;
+  started = true;
+
+  playTone(659.25, .25);
+
+  $("start").classList.add("hidden");
+
+  setTimeout(() => {
+    $("loading").classList.remove("hidden");
+
+    let progress = 0;
+
+    const timer = setInterval(() => {
+      progress = Math.min(100, progress + Math.floor(Math.random() * 8) + 4);
+
+      $("progress").style.width = progress + "%";
+      $("loadText").textContent =
+        "Preparing your surprise... " + progress + "%";
+
+      if (progress >= 100) {
+        clearInterval(timer);
+
+        setTimeout(() => {
+          $("loading").classList.add("hidden");
+          $("main").classList.remove("hidden");
+
+          startMusic();
+          initParticles();
+          createFloatingItems();
+          runAnimation();
+        }, 500);
+      }
+    }, 100);
+  }, 450);
+};
+
+/* SHOW EACH MESSAGE */
+function runAnimation() {
+  $("final").style.display = "none";
+  $("icon").style.display = "block";
+  $("message").style.display = "flex";
+
+  let index = 0;
+
+  function nextStep() {
+    $("message").classList.remove("show");
+
+    setTimeout(() => {
+      if (index < CONFIG.steps.length) {
+        const step = CONFIG.steps[index];
+
+        $("icon").textContent = step.icon;
+        $("message").textContent = step.text;
+        $("message").classList.add("show");
+
+        playTone(440 + index * 70, .35);
+
+        index++;
+        setTimeout(nextStep, 3000);
+
+      } else {
+        $("icon").style.display = "none";
+        $("message").style.display = "none";
+
+        setTimeout(() => {
+          $("name").textContent = CONFIG.personName;
+          $("final").style.display = "block";
+
+          heartExplosion();
+        }, 500);
+      }
+    }, 500);
+  }
+
+  nextStep();
+}
+
+/* FLOATING HEARTS AND FLOWERS */
+function createFloatingItems() {
+  clearInterval(floatTimer);
+
+  floatTimer = setInterval(() => {
+    const item = document.createElement("div");
+    item.className = "float-item";
+
+    item.textContent =
+      CONFIG.floatingItems[
+        Math.floor(Math.random() * CONFIG.floatingItems.length)
+      ];
+
+    item.style.left = Math.random() * 95 + "vw";
+    item.style.fontSize = 20 + Math.random() * 25 + "px";
+    item.style.animationDuration = 7 + Math.random() * 6 + "s";
+
+    $("main");
+    $("main").appendChild(item);
+
+    setTimeout(() => item.remove(), 14000);
+  }, 500);
+}
+
+/* SPARKLE PARTICLES */
+const canvas = $("canvas");
+const ctx = canvas.getContext("2d");
+
+let particles = [];
+let animationFrame;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  particles = [];
+
+  for (let i = 0; i < 65; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 2.5 + .5,
+      speedX: (Math.random() - .5) * .5,
+      speedY: -(Math.random() * .5 + .1),
+      alpha: Math.random() * .7 + .2
+    });
+  }
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach(p => {
+    p.x += p.speedX;
+    p.y += p.speedY;
+
+    if (p.y < 0) {
+      p.y = canvas.height;
+      p.x = Math.random() * canvas.width;
+    }
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+
+    ctx.fillStyle = `rgba(255,150,210,${p.alpha})`;
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = "#ff4f9a";
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  });
+
+  animationFrame = requestAnimationFrame(animateParticles);
+}
+
+function initParticles() {
+  cancelAnimationFrame(animationFrame);
+  resizeCanvas();
+  animateParticles();
+}
+
+function heartExplosion() {
+  for (let i = 0; i < 5; i++) {
+    setTimeout(() => {
+      playTone(523 + i * 100, .55, .07);
+    }, i * 130);
+  }
+
+  for (let i = 0; i < 40; i++) {
+    const heart = document.createElement("div");
+
+    heart.className = "float-item";
+    heart.textContent = ["💖", "✨", "💕", "🌸"][
+      Math.floor(Math.random() * 4)
+    ];
+
+    heart.style.left = Math.random() * 95 + "vw";
+    heart.style.fontSize = 20 + Math.random() * 28 + "px";
+    heart.style.animationDuration = 3 + Math.random() * 3 + "s";
+
+    $("main").appendChild(heart);
+
+    setTimeout(() => heart.remove(), 7000);
+  }
+}
+
+window.addEventListener("resize", resizeCanvas);
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && musicOn) stopMusic();
+});
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="bn">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Romantic Surprise</title>
