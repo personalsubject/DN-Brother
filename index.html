@@ -3,404 +3,456 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>একটি বিশেষ সারপ্রাইজ ❤️</title>
+<title>একটি ছোট্ট প্রশ্ন, খাদিজা 💗</title>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --pink:#ff77ad;
+  --gold:#ffe1ae;
+  --white:#fff5fa;
 }
 
-body {
-  min-height: 100vh;
-  overflow: hidden;
-  font-family: "Noto Sans Bengali", sans-serif;
-  background: radial-gradient(circle at top, #4a102e, #160719 65%, #08040e);
-  color: white;
+body{
+  min-height:100vh;
+  overflow-x:hidden;
+  color:var(--white);
+  font-family:"Noto Sans Bengali",sans-serif;
+  background:
+    radial-gradient(ellipse at 50% 0%,#79244f 0%,transparent 48%),
+    linear-gradient(145deg,#170918,#310d2b 50%,#100919);
 }
 
-.stars {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(2px 2px at 20% 30%, white 50%, transparent),
-    radial-gradient(2px 2px at 70% 20%, #ffc0dc 50%, transparent),
-    radial-gradient(2px 2px at 40% 80%, white 50%, transparent),
-    radial-gradient(2px 2px at 85% 65%, #ff80b5 50%, transparent);
-  background-size: 180px 180px;
-  animation: starsMove 12s linear infinite;
+#sky,.petals,.sparkles{
+  position:fixed;inset:0;pointer-events:none;
 }
 
-@keyframes starsMove {
-  from { transform: translateY(0); }
-  to { transform: translateY(-180px); }
+#sky{z-index:0}
+.petals{z-index:2;overflow:hidden}
+.sparkles{z-index:1}
+
+.star{
+  position:absolute;
+  width:2px;height:2px;border-radius:50%;
+  background:white;
+  box-shadow:0 0 8px #ffb4d5;
+  animation:twinkle 2s infinite alternate;
 }
 
-.center {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 22px;
-  text-align: center;
-  position: relative;
-  z-index: 2;
+@keyframes twinkle{
+  from{opacity:.2;transform:scale(.7)}
+  to{opacity:1;transform:scale(1.7)}
 }
 
-.card {
-  width: 100%;
-  max-width: 480px;
-  padding: 34px 22px;
-  border: 1px solid rgba(255, 180, 215, .35);
-  border-radius: 28px;
-  background: rgba(255, 255, 255, .07);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 0 35px rgba(255, 40, 130, .18);
-  animation: appear 1.2s ease both;
+.wrap{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px 15px;
+  position:relative;z-index:3;
 }
 
-@keyframes appear {
-  from { opacity: 0; transform: translateY(25px) scale(.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+.card{
+  width:100%;max-width:490px;
+  padding:30px 23px;
+  border:1px solid #ffb9d65c;
+  border-radius:30px;
+  background:linear-gradient(145deg,#ffffff13,#ffffff06);
+  backdrop-filter:blur(16px);
+  box-shadow:0 0 55px #ff368c19,inset 0 0 30px #ffffff05;
+  text-align:center;
+  animation:cardIn 1.2s ease both;
 }
 
-.heart {
-  font-size: 58px;
-  display: inline-block;
-  filter: drop-shadow(0 0 15px #ff438f);
-  animation: heartbeat 1.2s infinite;
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(35px) scale(.95)}
+  to{opacity:1;transform:translateY(0) scale(1)}
 }
 
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  15% { transform: scale(1.18); }
-  30% { transform: scale(1); }
-  45% { transform: scale(1.12); }
+.eyebrow{
+  color:var(--gold);
+  font-size:12px;letter-spacing:3px;
+  margin-bottom:20px;
 }
 
-h1 {
-  font-size: clamp(25px, 7vw, 37px);
-  margin: 16px 0;
-  color: #ffd3e6;
-  text-shadow: 0 0 16px #ff348b;
+.big-heart{
+  font-size:65px;display:inline-block;
+  filter:drop-shadow(0 0 20px #ff438e);
+  animation:heartbeat 1.5s infinite;
 }
 
-.message {
-  min-height: 95px;
-  font-size: 18px;
-  line-height: 1.9;
-  color: #fff0f6;
-  margin: 18px 0;
+@keyframes heartbeat{
+  0%,100%{transform:scale(1)}
+  15%{transform:scale(1.16)}
+  30%{transform:scale(1)}
+  45%{transform:scale(1.1)}
 }
 
-button {
-  border: none;
-  border-radius: 50px;
-  padding: 13px 25px;
-  margin: 7px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  color: #74113d;
-  background: linear-gradient(135deg, #ffe0ec, #ff82b5);
-  box-shadow: 0 5px 20px rgba(255, 66, 145, .28);
-  transition: transform .2s, box-shadow .2s;
+h1{
+  color:#ffe0ee;
+  font-size:clamp(25px,7vw,36px);
+  line-height:1.6;
+  margin:15px 0;
+  text-shadow:0 0 18px #ff5ca5a8;
 }
 
-button:active {
-  transform: scale(.94);
+.name{
+  font-size:clamp(39px,11vw,58px);
+  font-weight:800;
+  color:#ffd4e7;
+  text-shadow:0 0 8px #ffb1d3,0 0 28px #ff388f;
+  animation:nameGlow 2s infinite alternate;
 }
 
-button:hover {
-  box-shadow: 0 0 25px rgba(255, 120, 180, .6);
+@keyframes nameGlow{
+  from{filter:brightness(.9);transform:scale(.98)}
+  to{filter:brightness(1.2);transform:scale(1.035)}
 }
 
-.hidden {
-  display: none;
+.line{
+  width:85px;height:2px;margin:20px auto;
+  background:linear-gradient(90deg,transparent,#ffe0ad,transparent);
 }
 
-.name {
-  font-size: clamp(32px, 9vw, 49px);
-  font-weight: bold;
-  color: #ffb7d7;
-  text-shadow: 0 0 8px #ff5aa5, 0 0 25px #ff268c;
-  overflow-wrap: anywhere;
-  animation: nameGlow 1.6s ease-in-out infinite alternate;
+.message{
+  min-height:95px;
+  font-size:17px;line-height:2;
+  color:#fff0f7;margin:15px 0;
 }
 
-@keyframes nameGlow {
-  from { transform: scale(.97); text-shadow: 0 0 8px #ff5aa5; }
-  to { transform: scale(1.04); text-shadow: 0 0 25px #ff268c, 0 0 45px #ff80bd; }
+button{
+  font-family:inherit;font-size:15px;
+  border:1px solid #ffffff40;
+  border-radius:50px;padding:13px 21px;
+  margin:7px 4px;cursor:pointer;
+  transition:transform .2s,box-shadow .3s;
 }
 
-.float {
-  position: fixed;
-  bottom: -40px;
-  z-index: 1;
-  pointer-events: none;
-  animation: floatUp linear forwards;
+button:active{transform:scale(.95)}
+
+.primary{
+  color:#58102f;
+  font-weight:bold;
+  background:linear-gradient(135deg,#ffe5ef,#ff83b7,#ffd8a3);
+  box-shadow:0 5px 25px #ff5b9c3d;
 }
 
-@keyframes floatUp {
-  to {
-    transform: translateY(-115vh) rotate(360deg);
-    opacity: 0;
-  }
+.secondary{
+  color:#ffe3ef;background:#ffffff0b;
 }
 
-#confetti {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 3;
+button:hover{box-shadow:0 0 24px #ff7ab066}
+
+.hidden{display:none!important}
+
+.note{
+  margin-top:22px;color:#dcb6cb;
+  font-size:12px;line-height:1.9;
 }
 
-.small {
-  font-size: 12px;
-  color: #e9bbd0;
-  margin-top: 20px;
+.petal{
+  position:absolute;top:-40px;
+  animation:fall linear forwards;
+  filter:drop-shadow(0 0 5px #ff82b4);
 }
+
+@keyframes fall{
+  0%{transform:translateY(-30px) rotate(0deg);opacity:0}
+  10%{opacity:.9}
+  100%{transform:translateY(110vh) rotate(650deg) translateX(70px);opacity:0}
+}
+
+#burst{
+  position:fixed;inset:0;z-index:4;
+  pointer-events:none;
+}
+
+.footer{font-size:11px;color:#c9a4ba;margin-top:24px}
+
+.pulse{
+  animation:pulse 1s infinite alternate;
+}
+@keyframes pulse{to{box-shadow:0 0 35px #ff559c70}}
 </style>
 </head>
 
 <body>
-<div class="stars"></div>
-<canvas id="confetti"></canvas>
+<canvas id="sky"></canvas>
+<div class="sparkles" id="sparkles"></div>
+<div class="petals" id="petals"></div>
+<canvas id="burst"></canvas>
 
-<div class="center">
-  <main class="card">
-    <div class="heart">💗</div>
+<div class="wrap">
+  <main class="card" id="card">
+
+    <div class="eyebrow">A LITTLE SURPRISE FOR YOU</div>
+    <div class="big-heart">💗</div>
 
     <section id="intro">
-      <h1>তোমার জন্য একটি সারপ্রাইজ</h1>
+      <h1>একটু সময় হবে, খাদিজা? 🌷</h1>
+      <div class="line"></div>
       <p class="message">
-        কিছু কথা আছে হৃদয়ের গভীরে…<br>
-        আজ সেগুলো তোমাকে বলতে চাই। ❤️
+        তোমাকে একটা ছোট্ট কথা বলতে চাই…<br>
+        খুব সুন্দর করে সাজিয়ে রেখেছি। 💌
       </p>
-      <button id="startBtn">সারপ্রাইজ দেখো 💌</button>
+      <button class="primary pulse" id="begin">সারপ্রাইজটা খুলে দেখো ✨</button>
+      <p class="note">একটু সময় নিয়ে পড়বে, প্লিজ। ❤️</p>
     </section>
 
     <section id="story" class="hidden">
-      <h1 id="heading">একটা কথা বলি…</h1>
-      <p class="message" id="message"></p>
-      <button id="nextBtn">এরপর কী? 💕</button>
+      <div class="name">খাদিজা</div>
+      <div class="line"></div>
+      <h1 id="storyTitle">একটা ছোট্ট পরিচয়…</h1>
+      <p class="message" id="storyMessage"></p>
+      <button class="primary" id="next">আরও একটু পড়ো 💕</button>
     </section>
 
-    <section id="ending" class="hidden">
-      <h1>আমার বিশেষ মানুষ ❤️</h1>
-      <div class="name" id="personName"></div>
+    <section id="proposal" class="hidden">
+      <div class="big-heart">🌹</div>
+      <h1>খাদিজা, তোমাকে একটা কথা জিজ্ঞেস করি?</h1>
       <p class="message">
-        তোমার হাসি সুন্দর থাকুক,<br>
-        তোমার প্রতিটি দিন আনন্দে ভরে উঠুক। 🌹
+        তোমার সঙ্গে পরিচয়টা অল্প দিনের,<br>
+        তবুও তোমার সঙ্গে আরও কথা বলতে<br>
+        আর তোমাকে আরও ভালোভাবে জানতে ইচ্ছে করে। 💗
+        <br><br>
+        <strong>তুমি কি আমাকে তোমাকে আরও ভালোভাবে জানার সুযোগ দেবে?</strong>
       </p>
-      <div class="heart">❤️</div>
-      <button id="againBtn">আবার দেখো ✨</button>
+
+      <button class="primary" id="yes">হ্যাঁ, কথা বলতে পারি 😊</button>
+      <button class="secondary" id="think">আমার একটু সময় দরকার 🌷</button>
+
+      <p class="note">
+        তোমার উত্তর যাই হোক, আমি সেটাকে সম্মান করব।<br>
+        তোমার ওপর কোনো চাপ নেই। 💖
+      </p>
     </section>
 
-    <p class="small">তৈরি করা হয়েছে হৃদয়ের একটুখানি ভালোবাসা দিয়ে 💖</p>
+    <section id="answer" class="hidden">
+      <div class="big-heart" id="answerEmoji">💖</div>
+      <h1 id="answerTitle">ধন্যবাদ, খাদিজা!</h1>
+      <div class="line"></div>
+      <p class="message" id="answerMessage"></p>
+      <button class="secondary" id="restart">আবার প্রথম থেকে দেখো ✨</button>
+    </section>
+
+    <div class="footer">তোমার জন্য একটি ছোট্ট, আন্তরিক সারপ্রাইজ 💌</div>
   </main>
 </div>
 
 <script>
 "use strict";
 
-// এখানে নিজের পছন্দমতো নাম পরিবর্তন করো
-const CONFIG = {
-  name: "খাদিজা",
-  messages: [
-    "তোমাকে কিছু বলার জন্য এই ছোট্ট সারপ্রাইজটি তৈরি করেছি। 💌",
-    "পৃথিবীতে অনেক সুন্দর মুহূর্ত আছে, আর কিছু মুহূর্ত মনে বিশেষ জায়গা করে নেয়। 🌸",
-    "তোমার জন্য রইল অনেক শুভকামনা, হাসি আর সুন্দর দিনের প্রার্থনা। 💗",
-    "এবার তোমার জন্য রাখা শেষ সারপ্রাইজটি দেখো… ❤️"
-  ]
-};
-
 const $ = id => document.getElementById(id);
 
+const pages = ["intro","story","proposal","answer"];
+
+const messages = [
+  {
+    title:"TikTok-এর সেই পরিচয়… 💫",
+    text:"আমাদের পরিচয় TikTok-এর মাধ্যমে। হয়তো সময়টা খুব বেশি নয়, আর সামনাসামনি দেখাও হয়নি। তবুও তোমার সঙ্গে কথা বলার সুযোগটা আমার কাছে সুন্দর।"
+  },
+  {
+    title:"একটা কথা সত্যি… 🌸",
+    text:"আমি এখনই বলছি না যে তোমাকে ভালোবেসে ফেলেছি। আমি শুধু তোমাকে আরও জানতে চাই, তোমার কথা শুনতে চাই, আর দেখতে চাই আমাদের পরিচয়টা সুন্দর কোনো বন্ধুত্বে পরিণত হতে পারে কি না।"
+  },
+  {
+    title:"তাই আজ এই ছোট্ট প্রশ্ন… 💗",
+    text:"তোমার প্রতি আমার একটা ভালো লাগা তৈরি হচ্ছে। তাই ভাবলাম, মনের কথাটা লুকিয়ে না রেখে তোমাকে সম্মানের সঙ্গে জানাই। তোমার মতামত আমার কাছে গুরুত্বপূর্ণ।"
+  }
+];
+
 let step = 0;
-let audioContext = null;
-let melodyTimer = null;
+let audio = null;
+let musicTimer = null;
+let melodyIndex = 0;
+let musicEnabled = false;
 let typingTimer = null;
 
-function playTone(frequency, duration = 0.22) {
-  if (!audioContext) return;
-
-  const oscillator = audioContext.createOscillator();
-  const gain = audioContext.createGain();
-
-  oscillator.type = "sine";
-  oscillator.frequency.value = frequency;
-
-  gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
-  gain.gain.exponentialRampToValueAtTime(
-    0.08, audioContext.currentTime + 0.03
-  );
-  gain.gain.exponentialRampToValueAtTime(
-    0.0001, audioContext.currentTime + duration
-  );
-
-  oscillator.connect(gain);
-  gain.connect(audioContext.destination);
-
-  oscillator.start();
-  oscillator.stop(audioContext.currentTime + duration + 0.04);
+function show(id){
+  pages.forEach(page => $(page).classList.toggle("hidden", page !== id));
 }
 
-function playMelody() {
-  if (!audioContext) return;
-
-  [523, 659, 784, 659].forEach((frequency, index) => {
-    setTimeout(() => playTone(frequency, 0.3), index * 450);
-  });
-}
-
-function startMusic() {
-  try {
-    const AudioContextClass =
-      window.AudioContext || window.webkitAudioContext;
-
-    if (!AudioContextClass) return;
-
-    if (!audioContext) {
-      audioContext = new AudioContextClass();
-    }
-
-    audioContext.resume();
-    playMelody();
-
-    clearInterval(melodyTimer);
-    melodyTimer = setInterval(playMelody, 2200);
-  } catch (error) {
-    console.log("অডিও চালু করা যায়নি:", error);
-  }
-}
-
-function typeText(element, text, speed = 38) {
+function typeText(element,text,speed=34){
   clearInterval(typingTimer);
   element.textContent = "";
-  let index = 0;
-
-  typingTimer = setInterval(() => {
-    element.textContent += text.charAt(index);
-    index++;
-
-    if (index >= text.length) {
-      clearInterval(typingTimer);
-    }
-  }, speed);
+  let i = 0;
+  typingTimer = setInterval(()=>{
+    element.textContent += text.charAt(i++);
+    if(i >= text.length) clearInterval(typingTimer);
+  },speed);
 }
 
-function showSection(sectionId) {
-  ["intro", "story", "ending"].forEach(id => {
-    $(id).classList.toggle("hidden", id !== sectionId);
+// Web Audio দিয়ে হালকা, নিজস্ব তৈরি সুর
+function initMusic(){
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if(!AudioContextClass) return;
+  if(!audio) audio = new AudioContextClass();
+  audio.resume();
+  musicEnabled = true;
+  if(!musicTimer) musicTimer = setInterval(playMusicPhrase, 2400);
+  playMusicPhrase();
+}
+
+function note(freq,start,duration,volume){
+  if(!audio || !musicEnabled) return;
+
+  const osc = audio.createOscillator();
+  const gain = audio.createGain();
+  const now = audio.currentTime + start;
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(freq,now);
+
+  gain.gain.setValueAtTime(0.0001,now);
+  gain.gain.linearRampToValueAtTime(volume,now+0.08);
+  gain.gain.exponentialRampToValueAtTime(0.0001,now+duration);
+
+  osc.connect(gain);
+  gain.connect(audio.destination);
+  osc.start(now);
+  osc.stop(now+duration+0.05);
+}
+
+function playMusicPhrase(){
+  if(!audio || !musicEnabled) return;
+
+  // মৃদু পিয়ানোর মতো সুর
+  const melodies = [
+    [523.25,659.25,783.99,659.25,587.33,698.46],
+    [493.88,587.33,659.25,783.99,698.46,587.33],
+    [523.25,659.25,698.46,880,783.99,659.25]
+  ];
+
+  const phrase = melodies[melodyIndex++ % melodies.length];
+
+  phrase.forEach((freq,i)=>{
+    note(freq,i*0.31,0.62,0.045);
   });
+
+  // নরম হারমনি
+  note(261.63,0,1.6,0.018);
+  note(329.63,1.05,1.2,0.014);
 }
 
-function createFloatingHeart() {
-  const item = document.createElement("span");
-  const symbols = ["💗", "💖", "💕", "✨", "🌸", "❤️"];
-
-  item.className = "float";
-  item.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-  item.style.left = Math.random() * 100 + "vw";
-  item.style.fontSize = (16 + Math.random() * 22) + "px";
-  item.style.animationDuration = (5 + Math.random() * 5) + "s";
-
-  document.body.appendChild(item);
-  setTimeout(() => item.remove(), 10500);
+function petal(){
+  const p = document.createElement("span");
+  p.className = "petal";
+  p.textContent = ["🌸","🌹","💗","✨"][Math.floor(Math.random()*4)];
+  p.style.left = Math.random()*100+"vw";
+  p.style.fontSize = (14+Math.random()*17)+"px";
+  p.style.animationDuration = (7+Math.random()*7)+"s";
+  $("petals").appendChild(p);
+  setTimeout(()=>p.remove(),14500);
 }
 
-setInterval(createFloatingHeart, 650);
+setInterval(petal,700);
 
-const canvas = $("confetti");
-const ctx = canvas.getContext("2d");
-let particles = [];
-let animationFrame = null;
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+// Star field
+for(let i=0;i<65;i++){
+  const s=document.createElement("i");
+  s.className="star";
+  s.style.left=Math.random()*100+"%";
+  s.style.top=Math.random()*100+"%";
+  s.style.animationDelay=Math.random()*3+"s";
+  s.style.animationDuration=(1.2+Math.random()*2.5)+"s";
+  $("sparkles").appendChild(s);
 }
 
-window.addEventListener("resize", resizeCanvas);
-resizeCanvas();
+// Heart-shaped confetti
+const canvas=$("burst");
+const ctx=canvas.getContext("2d");
+let particles=[];
+let frame=null;
 
-function celebrate() {
-  particles = Array.from({ length: 120 }, () => ({
-    x: Math.random() * canvas.width,
-    y: -Math.random() * canvas.height,
-    size: 3 + Math.random() * 5,
-    speed: 2 + Math.random() * 4,
-    drift: (Math.random() - 0.5) * 3,
-    hue: Math.random() * 360
+function resize(){
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+}
+window.addEventListener("resize",resize);
+resize();
+
+function celebrate(){
+  if(frame) cancelAnimationFrame(frame);
+
+  particles=Array.from({length:95},()=>({
+    x:canvas.width/2+(Math.random()-.5)*100,
+    y:canvas.height/2,
+    vx:(Math.random()-.5)*9,
+    vy:(Math.random()-.5)*10-2,
+    life:80+Math.random()*50,
+    size:3+Math.random()*5,
+    color:["#ff91bd","#ffe4a9","#ffffff","#ff4f9b"][Math.floor(Math.random()*4)]
   }));
 
-  if (animationFrame) cancelAnimationFrame(animationFrame);
-
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    particles.forEach(p => {
-      p.y += p.speed;
-      p.x += p.drift;
-
-      ctx.fillStyle = `hsl(${p.hue}, 90%, 70%)`;
-      ctx.fillRect(p.x, p.y, p.size, p.size * 1.6);
-
-      if (p.y > canvas.height) {
-        p.y = -10;
-        p.x = Math.random() * canvas.width;
-      }
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.vy+=.09;p.life--;
+      ctx.globalAlpha=Math.max(0,p.life/100);
+      ctx.fillStyle=p.color;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fill();
     });
+    ctx.globalAlpha=1;
+    particles=particles.filter(p=>p.life>0);
 
-    animationFrame = requestAnimationFrame(draw);
+    if(particles.length) frame=requestAnimationFrame(draw);
+    else {frame=null;ctx.clearRect(0,0,canvas.width,canvas.height);}
   }
-
   draw();
-
-  setTimeout(() => {
-    if (animationFrame) cancelAnimationFrame(animationFrame);
-    animationFrame = null;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }, 5000);
 }
 
-$("startBtn").addEventListener("click", () => {
-  startMusic();
-  step = 0;
-  showSection("story");
-  typeText($("message"), CONFIG.messages[step]);
+$("begin").addEventListener("click",()=>{
+  initMusic();
+  step=0;
+  show("story");
+  $("storyTitle").textContent=messages[step].title;
+  typeText($("storyMessage"),messages[step].text);
 });
 
-$("nextBtn").addEventListener("click", () => {
-  startMusic();
+$("next").addEventListener("click",()=>{
+  initMusic();
   step++;
 
-  if (step < CONFIG.messages.length) {
-    typeText($("message"), CONFIG.messages[step]);
-  } else {
-    clearInterval(typingTimer);
-    showSection("ending");
-    $("personName").textContent = CONFIG.name;
+  if(step<messages.length){
+    $("storyTitle").textContent=messages[step].title;
+    typeText($("storyMessage"),messages[step].text);
+  }else{
+    show("proposal");
     celebrate();
-    playMelody();
   }
 });
 
-$("againBtn").addEventListener("click", () => {
-  step = 0;
-  clearInterval(typingTimer);
-  showSection("intro");
-  startMusic();
+$("yes").addEventListener("click",()=>{
+  initMusic();
+  show("answer");
+  $("answerEmoji").textContent="🌷";
+  $("answerTitle").textContent="ধন্যবাদ, খাদিজা! 💗";
+  typeText($("answerMessage"),
+    "তোমার সঙ্গে আরও কথা বলতে পারব জেনে ভালো লাগছে। চলো, তাড়াহুড়ো না করে ধীরে ধীরে একে অপরকে জানি। সুন্দর একটা পরিচয় তৈরি হোক আমাদের। ✨");
+  celebrate();
 });
 
-window.addEventListener("pagehide", () => {
-  clearInterval(melodyTimer);
+$("think").addEventListener("click",()=>{
+  show("answer");
+  $("answerEmoji").textContent="🌸";
+  $("answerTitle").textContent="একদম ঠিক আছে, খাদিজা";
+  typeText($("answerMessage"),
+    "সময় নিয়ে ভেবো। তোমার সিদ্ধান্তকে আমি সম্মান করি। তোমার ওপর কোনো চাপ নেই। এই ছোট্ট সারপ্রাইজটা দেখার জন্য ধন্যবাদ। 💗");
+});
+
+$("restart").addEventListener("click",()=>{
   clearInterval(typingTimer);
-  if (animationFrame) cancelAnimationFrame(animationFrame);
+  step=0;
+  show("intro");
+});
+
+window.addEventListener("pagehide",()=>{
+  clearInterval(musicTimer);
+  clearInterval(typingTimer);
+  if(frame) cancelAnimationFrame(frame);
 });
 </script>
 </body>
-</html>
+  </html>
